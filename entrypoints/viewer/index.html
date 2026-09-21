@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>&lt;EXTENSION_NAME&gt;</title>
+	</head>
+	<body>
+		<main>
+			<h1>&lt;EXTENSION_NAME&gt;</h1>
+			<textarea
+				id="input"
+				spellcheck="false"
+				placeholder="Paste JSON here"
+				aria-label="JSON input"
+			></textarea>
+			<div class="actions">
+				<button id="format" type="button">Format</button>
+				<span class="hint">Ctrl/Cmd+Enter</span>
+			</div>
+			<div id="result"></div>
+		</main>
+		<script type="module" src="./main.ts"></script>
+	</body>
+</html>

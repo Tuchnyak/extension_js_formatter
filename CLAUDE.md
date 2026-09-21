@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Состояние репозитория
 
-Проект — офлайн JSON Viewer (Chrome-расширение, MV3), разрабатывается по шагам из `SPEC.md` (источник истины; перед работой читать целиком, он на русском). Реализован Шаг 1 v1 (скелет: `background.ts`, заглушка `viewer.html`, фикстуры). Остальное — в спеке; `lib/` и `content.ts` ещё не созданы. `README.md` (на английском, проект открытый) описывает стек, структуру и команды — при изменении структуры или команд обновлять и его.
+Проект — офлайн JSON Viewer (Chrome-расширение, MV3), разрабатывается по шагам из `SPEC.md` (источник истины; перед работой читать целиком, он на русском). Реализованы Шаги 1–2 v1 (скелет; `lib/parse.ts`, `lib/render.ts`, `lib/styles.css`; `entrypoints/viewer/` с textarea и Format). Остальное — в спеке; `content.ts`, `toolbar.ts`, `theme.ts` ещё не созданы. Каждый шаг делается в ветке `feature/<name>` и сливается в `master` после подтверждения владельца. `README.md` (на английском, проект открытый) описывает стек, структуру и команды — при изменении структуры или команд обновлять и его.
 
 ## Правила работы (из SPEC.md, раздел 0)
 
@@ -29,7 +29,7 @@ WXT (vanilla + TypeScript, версия `~0.20.x`, не `^`), npm, Biome (оди
 
 Ключевой принцип: **один движок рендера, три точки входа**. `lib/parse.ts`, `lib/render.ts`, `lib/toolbar.ts`, `lib/styles.css` общие для viewer-страницы и content script, без дублирования. Все CSS-классы с префиксом `jv-`.
 
-- `lib/parse.ts` — обёртка над `JSON.parse`; line/column ошибки считаются самостоятельно из `position N` в сообщении V8 (формат может меняться), без позиции — только `message`.
+- `lib/parse.ts` — обёртка над `JSON.parse`; line/column ошибки считаются самостоятельно: из `position N` в сообщении V8, а если его нет (сообщения `Unexpected token ...` позиции не содержат) — запасным строгим сканером JSON, который только ищет смещение ошибки (решение владельца, отступление от спеки).
 - `lib/render.ts` — `renderJson(value)` строит DOM рекурсивно; `MAX_RENDER_BYTES = 10 MB` — выше дерево не строится, показывается raw + уведомление.
 - Точки входа: (1) `content.ts` на `<all_urls>` подменяет body на JSON-URL (первая строка — проверка `document.contentType`, иначе мгновенный `return`); (2) клик по иконке → `background.ts` открывает `viewer.html` (без popup, нужен `action: {}` в `wxt.config.ts`); (3) контекстное меню на выделении → выделенный текст кладётся в `storage.session` под случайным ключом, открывается `viewer.html?id=<key>`, viewer читает значение и сразу удаляет ключ. Меню создаётся в `runtime.onInstalled` (service worker MV3 не постоянный).
 - v2: `lib/sql.ts` — чистая функция `jsonToInsert`, покрытая Vitest; на JSON-страницах — только кнопка «Open in Viewer» через тот же `storage.session`.

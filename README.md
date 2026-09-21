@@ -6,7 +6,7 @@ The full specification and step-by-step plan live in [`SPEC.md`](SPEC.md) (in Ru
 
 ## Status
 
-**Step 1** (project skeleton) is implemented: the extension builds, and clicking its icon opens a placeholder page. The actual JSON viewer (parsing, tree, themes, context menu, auto-formatting of JSON pages) is added in steps 2–5. The "Planned" blocks below describe what is not in the repository yet.
+**Steps 1–2** are implemented: clicking the extension icon opens the viewer page, where you paste JSON and press Format (or Ctrl/Cmd+Enter) to get a colored, indented view, or an error with line, column and a caret marker. Collapsible tree, themes, context menu and auto-formatting of JSON pages come in steps 3–5. The "Planned" blocks below describe what is not in the repository yet.
 
 ## The stack in plain words
 
@@ -34,7 +34,14 @@ Currently in the repository:
 ```
 entrypoints/            # extension "entry points"; WXT discovers them by file name
   background.ts         #   background script: clicking the icon opens viewer.html in a new tab
-  viewer.html           #   viewer page (a "Viewer works" placeholder for now)
+  viewer/               #   viewer page (built as viewer.html): textarea, Format button, result area
+    index.html
+    main.ts
+    style.css
+lib/                    # code shared between entry points
+  parse.ts              #   JSON parsing + error position (line/column)
+  render.ts             #   JSON -> DOM tree, and error rendering
+  styles.css            #   shared styles (classes prefixed with jv-)
 fixtures/               # sample JSON files for manual testing
   simple.json           #   flat object
   nested.json           #   deep nesting
@@ -62,15 +69,12 @@ node_modules/           # installed dependencies
 fixtures/large.json     # created by generate-large.mjs
 ```
 
-Planned (steps 2–5, `SPEC.md` section 3.1):
+Planned (steps 3–5, `SPEC.md` section 3.1):
 
 ```
 entrypoints/content.ts  # auto-format JSON pages (opened directly by URL)
-lib/parse.ts            # JSON parsing + error position (line/column)
-lib/render.ts           # JSON -> DOM tree
 lib/toolbar.ts          # Raw/Parsed, Expand/Collapse, theme switch
 lib/theme.ts            # System/Light/Dark theme
-lib/styles.css          # shared styles (classes prefixed with jv-)
 ```
 
 The idea: **one render engine, three entry points**. The `viewer.html` page, the context menu on selected text, and the content script on JSON pages all use the same code from `lib/`.
