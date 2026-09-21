@@ -1,0 +1,60 @@
+.jv-root {
+	--jv-key: #1a5fb4;
+	--jv-string: #2a7e3b;
+	--jv-number: #b45309;
+	--jv-boolean: #8e3aa8;
+	--jv-null: #6b7280;
+	--jv-punct: #6b7280;
+	font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+	font-size: 14px;
+	line-height: 1.5;
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+}
+
+.jv-children {
+	padding-left: 2ch;
+}
+
+.jv-key {
+	color: var(--jv-key);
+}
+
+.jv-string {
+	color: var(--jv-string);
+}
+
+.jv-number {
+	color: var(--jv-number);
+}
+
+.jv-boolean {
+	color: var(--jv-boolean);
+}
+
+.jv-null {
+	color: var(--jv-null);
+}
+
+.jv-punct {
+	color: var(--jv-punct);
+}
+
+.jv-error {
+	padding: 12px 16px;
+	border: 1px solid #d93025;
+	border-radius: 6px;
+	background: #fdecea;
+	color: #5f1a14;
+}
+
+.jv-error-message {
+	font-weight: 600;
+}
+
+.jv-error-source {
+	margin: 8px 0 0;
+	overflow-x: auto;
+	font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+	font-size: 14px;
+}
