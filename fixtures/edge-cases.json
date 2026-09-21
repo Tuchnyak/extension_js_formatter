@@ -1,0 +1,18 @@
+{
+	"emptyObject": {},
+	"emptyArray": [],
+	"cyrillic": "Привет, мир",
+	"emoji": "Hello 👋🌍 🚀",
+	"escapes": "line1\nline2\ttab \"quoted\" back\\slash",
+	"bigNumber": 12345678901234567890,
+	"maxSafe": 9007199254740991,
+	"float": -1.5e10,
+	"urls": [
+		"https://example.com/path?q=1&r=2",
+		"http://localhost:3000/nested.json",
+		"not a url https://example.com",
+		"javascript:alert(1)"
+	],
+	"key with spaces": 1,
+	"key-with-dash": 2
+}

@@ -1,0 +1,32 @@
+{
+	"company": {
+		"name": "Acme",
+		"departments": [
+			{
+				"title": "Engineering",
+				"teams": [
+					{
+						"name": "Backend",
+						"members": [
+							{ "id": 1, "name": "Alice", "skills": ["java", "sql"] },
+							{ "id": 2, "name": "Bob", "skills": ["python"] }
+						]
+					},
+					{
+						"name": "Frontend",
+						"members": [{ "id": 3, "name": "Carol", "skills": ["ts", "css"] }]
+					}
+				]
+			},
+			{
+				"title": "Support",
+				"teams": [
+					{
+						"name": "L1",
+						"members": [{ "id": 4, "name": "Dave", "skills": [] }]
+					}
+				]
+			}
+		]
+	}
+}
