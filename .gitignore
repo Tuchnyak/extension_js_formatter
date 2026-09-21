@@ -4,4 +4,3 @@ node_modules
 web-ext.config.ts
 *.log
 fixtures/large.json
-SPEC.md
