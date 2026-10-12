@@ -6,7 +6,7 @@ The full specification and step-by-step plan live in [`SPEC.md`](SPEC.md) (in Ru
 
 ## Status
 
-**Steps 1–2** are implemented: clicking the extension icon opens the viewer page, where you paste JSON and press Format (or Ctrl/Cmd+Enter) to get a colored, indented view, or an error with line, column and a caret marker. Collapsible tree, themes, context menu and auto-formatting of JSON pages come in steps 3–5. The "Planned" blocks below describe what is not in the repository yet.
+**Steps 1–3** are implemented: clicking the extension icon opens the viewer page, where you paste JSON and press Format (or Ctrl/Cmd+Enter) to get a colored tree with collapsible nodes, clickable `http(s)` links, a Raw/Parsed toggle, Expand/Collapse all and a System/Light/Dark theme (saved between sessions). Invalid JSON shows an error with line, column and a caret marker. Context menu and auto-formatting of JSON pages come in steps 4–5. The "Planned" blocks below describe what is not in the repository yet.
 
 ## The stack in plain words
 
@@ -41,8 +41,10 @@ src/                    # all extension source code (WXT `srcDir`)
       style.css
   lib/                  #   code shared between entry points
     parse.ts            #     JSON parsing + error position (line/column)
-    render.ts           #     JSON -> DOM tree, and error rendering
-    styles.css          #     shared styles (classes prefixed with jv-)
+    render.ts           #     JSON -> DOM tree (collapsible <details>), raw text, errors
+    toolbar.ts          #     Raw/Parsed, Expand/Collapse all, theme switch; renderResult() builds a full result
+    theme.ts            #     System/Light/Dark theme, persisted in storage.local
+    styles.css          #     shared styles and theme colors (classes prefixed with jv-)
   public/               #   files copied to the build as-is (extension icons; empty for now, added in step 6)
 fixtures/               # sample JSON files for manual testing
   simple.json           #   flat object
@@ -70,12 +72,10 @@ node_modules/           # installed dependencies
 fixtures/large.json     # created by generate-large.mjs
 ```
 
-Planned (steps 3–5, `SPEC.md` section 3.1):
+Planned (step 5, `SPEC.md` section 3.1):
 
 ```
 src/entrypoints/content.ts  # auto-format JSON pages (opened directly by URL)
-src/lib/toolbar.ts          # Raw/Parsed, Expand/Collapse, theme switch
-src/lib/theme.ts            # System/Light/Dark theme
 ```
 
 The idea: **one render engine, three entry points**. The `viewer.html` page, the context menu on selected text, and the content script on JSON pages all use the same code from `src/lib/`.
@@ -160,6 +160,8 @@ Where the project deliberately differs from `SPEC.md`, the differences are logge
 - All extension code lives in `src/`: `wxt.config.ts` sets both `srcDir` and `publicDir` (with `srcDir` alone, WXT keeps looking for `public/` in the project root).
 - The native `JSON.parse` is used for parsing. When its error message has no position (e.g. `Unexpected token ']'...`), a small strict JSON scanner finds the line and column of the error. It is used only to locate the error, never to produce values.
 - Because values come from the native parser, numbers beyond double precision lose it (`12345678901234567890` is shown as `12345678901234567000`), and integer-like object keys (`"1"`, `"2"`) are shown in ascending order rather than source order.
+- Themes use CSS `light-dark()` (Chrome 123+). The only permission so far is `storage` (theme preference).
+- Rendering is plain DOM, about 2.5–3.5 s per MB of JSON; a 5 MB file takes roughly 13–17 s during which the tab is unresponsive. Collapse/Expand all rebuild the tree (closing thousands of existing `<details>` is quadratic in Chrome). Inputs over 10 MB are shown as raw text only.
 - `npm install` also runs `wxt prepare` (the `postinstall` script) to generate `.wxt/`.
 - `biome.json` ignores `fixtures/invalid-*.json` and `fixtures/large.json`: one is deliberately broken JSON, the other is huge and generated.
 - `web-ext.config.ts` (personal WXT launcher overrides) is in `.gitignore`. It is not needed when `CHROME_PATH` is set.
