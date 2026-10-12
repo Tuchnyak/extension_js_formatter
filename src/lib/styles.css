@@ -1,10 +1,53 @@
-.jv-root {
-	--jv-key: #1a5fb4;
-	--jv-string: #2a7e3b;
-	--jv-number: #b45309;
-	--jv-boolean: #8e3aa8;
-	--jv-null: #6b7280;
-	--jv-punct: #6b7280;
+/* Colors are custom properties on `.jv-app`; light-dark() follows color-scheme,
+   which is "light dark" (system) unless data-jv-theme forces one. */
+.jv-app {
+	color-scheme: light dark;
+	--jv-bg: light-dark(#ffffff, #1b1d21);
+	--jv-fg: light-dark(#1f2328, #d8dadd);
+	--jv-muted: light-dark(#6b7280, #9a9ea6);
+	--jv-key: light-dark(#1a5fb4, #78aeed);
+	--jv-string: light-dark(#2a7e3b, #8ff0a4);
+	--jv-number: light-dark(#b45309, #ffbe6f);
+	--jv-boolean: light-dark(#8e3aa8, #dc8add);
+	--jv-null: var(--jv-muted);
+	--jv-punct: var(--jv-muted);
+	--jv-guide: light-dark(#d9dce1, #3a3e45);
+	--jv-active: light-dark(#dbe8fb, #2b4a73);
+	--jv-error-bg: light-dark(#fdecea, #3b1a17);
+	--jv-error-border: light-dark(#d93025, #f28b82);
+	--jv-error-fg: light-dark(#5f1a14, #f9c4bf);
+}
+
+.jv-app[data-jv-theme="light"] {
+	color-scheme: light;
+}
+
+.jv-app[data-jv-theme="dark"] {
+	color-scheme: dark;
+}
+
+.jv-app [hidden] {
+	display: none;
+}
+
+.jv-toolbar {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px 16px;
+	margin-bottom: 12px;
+}
+
+.jv-group {
+	display: inline-flex;
+	gap: 4px;
+}
+
+.jv-btn[aria-pressed="true"] {
+	background: var(--jv-active);
+}
+
+.jv-root,
+.jv-raw {
 	font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 	font-size: 14px;
 	line-height: 1.5;
@@ -12,8 +55,52 @@
 	overflow-wrap: anywhere;
 }
 
+.jv-raw {
+	margin: 0;
+}
+
+/* Every line is indented by the width of the fold marker so keys line up. */
+.jv-line,
+.jv-close {
+	padding-left: 1.5ch;
+}
+
+.jv-summary {
+	display: block;
+	list-style: none;
+	cursor: pointer;
+}
+
+.jv-summary::-webkit-details-marker {
+	display: none;
+}
+
+.jv-summary::before {
+	content: "▾";
+	display: inline-block;
+	width: 1.5ch;
+	color: var(--jv-muted);
+}
+
+.jv-node:not([open]) > .jv-summary::before {
+	content: "▸";
+}
+
+.jv-node[open] > .jv-summary .jv-collapsed {
+	display: none;
+}
+
+.jv-count {
+	margin-left: 1ch;
+	color: var(--jv-muted);
+	font-style: italic;
+}
+
+/* Indent guide: a vertical line under the parent's fold marker. */
 .jv-children {
-	padding-left: 2ch;
+	margin-left: 0.6ch;
+	padding-left: 1.4ch;
+	border-left: 1px solid var(--jv-guide);
 }
 
 .jv-key {
@@ -22,6 +109,10 @@
 
 .jv-string {
 	color: var(--jv-string);
+}
+
+.jv-link {
+	color: inherit;
 }
 
 .jv-number {
@@ -40,12 +131,16 @@
 	color: var(--jv-punct);
 }
 
+.jv-notice {
+	color: var(--jv-muted);
+}
+
 .jv-error {
 	padding: 12px 16px;
-	border: 1px solid #d93025;
+	border: 1px solid var(--jv-error-border);
 	border-radius: 6px;
-	background: #fdecea;
-	color: #5f1a14;
+	background: var(--jv-error-bg);
+	color: var(--jv-error-fg);
 }
 
 .jv-error-message {
