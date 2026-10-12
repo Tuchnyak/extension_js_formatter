@@ -151,7 +151,18 @@ After code changes, rebuild and click the reload button on the extension card.
 
 ## How the work is organized
 
-Development follows the steps in `SPEC.md`: each step ends with a commit like `v1 step 3: collapsible tree and themes`, followed by a stop for review. The next step starts only after approval.
+Development follows the steps in `SPEC.md`. Each step is built in its own `feature/<name>` branch (e.g. `feature/v1-step-3`) and ends with a commit like `v1 step 3: collapsible tree and themes`, followed by a stop for review. After approval the branch is merged into `master` with `git merge --no-ff`. The next step starts only after that.
+
+## Notes and known limitations
+
+Where the project deliberately differs from `SPEC.md`, the differences are logged in section 8 of that file. In short:
+
+- All extension code lives in `src/`: `wxt.config.ts` sets both `srcDir` and `publicDir` (with `srcDir` alone, WXT keeps looking for `public/` in the project root).
+- The native `JSON.parse` is used for parsing. When its error message has no position (e.g. `Unexpected token ']'...`), a small strict JSON scanner finds the line and column of the error. It is used only to locate the error, never to produce values.
+- Because values come from the native parser, numbers beyond double precision lose it (`12345678901234567890` is shown as `12345678901234567000`), and integer-like object keys (`"1"`, `"2"`) are shown in ascending order rather than source order.
+- `npm install` also runs `wxt prepare` (the `postinstall` script) to generate `.wxt/`.
+- `biome.json` ignores `fixtures/invalid-*.json` and `fixtures/large.json`: one is deliberately broken JSON, the other is huge and generated.
+- `web-ext.config.ts` (personal WXT launcher overrides) is in `.gitignore`. It is not needed when `CHROME_PATH` is set.
 
 ## Hard constraints
 

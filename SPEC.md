@@ -14,7 +14,7 @@
 2. **Каждый шаг достраивает предыдущий, а не переписывает его.** Если для шага нужно существенно менять код прошлых шагов — остановись и объясни почему, прежде чем менять.
 3. **Если спецификация расходится с реальностью** (API WXT/Chrome работает не так, как описано; команда не существует; решение требует нового permission) — остановись и спроси. Не импровизируй молча.
 4. **Сверяйся с актуальной документацией WXT (wxt.dev).** API менялся между версиями: например, в 0.20.x удалён экспорт `wxt/sandbox`. Не используй импорты из старых туториалов; `defineBackground`, `defineContentScript`, `browser` в WXT доступны через auto-imports.
-5. **Коммит в конце каждого шага** с сообщением вида `v1 step 3: collapsible tree and themes`.
+5. **Каждый шаг делается в отдельной ветке `feature/<name>`** (например, `feature/v1-step-3`). В конце шага — коммит с сообщением вида `v1 step 3: collapsible tree and themes`, затем остановка на проверку. После подтверждения владельца ветка сливается в `master` (`git merge --no-ff`). Пуш в удалённый репозиторий делает владелец. Коммиты без подписи `Co-Authored-By`. См. раздел 8.
 6. **Язык:** весь UI — на английском. Комментарии в коде — на английском. Отчёты владельцу — на русском.
 
 ---
@@ -65,20 +65,23 @@
 ### 3.1. Структура проекта
 
 ```
-entrypoints/
-  background.ts        # context menu, click on toolbar icon
-  content.ts           # auto-format JSON documents
-  viewer.html          # unlisted page: viewer + manual paste
-  viewer/main.ts       # viewer page logic (or inline module per WXT conventions)
-lib/
-  parse.ts             # JSON.parse wrapper + error location (line/column)
-  render.ts            # value -> DOM tree (shared by viewer and content script)
-  toolbar.ts           # raw/parsed toggle, expand/collapse all, theme switch
-  theme.ts             # theme state: system | light | dark, persisted
-  styles.css           # shared styles, CSS custom properties, all classes prefixed `jv-`
+src/                   # весь код расширения (srcDir в wxt.config.ts), см. раздел 8
+  entrypoints/
+    background.ts      # context menu, click on toolbar icon
+    content.ts         # auto-format JSON documents
+    viewer/            # unlisted page: viewer + manual paste (собирается как viewer.html)
+      index.html
+      main.ts          # viewer page logic
+      style.css        # styles of the viewer page itself
+  lib/
+    parse.ts           # JSON.parse wrapper + error location (line/column)
+    render.ts          # value -> DOM tree (shared by viewer and content script)
+    toolbar.ts         # raw/parsed toggle, expand/collapse all, theme switch
+    theme.ts           # theme state: system | light | dark, persisted
+    styles.css         # shared styles, CSS custom properties, all classes prefixed `jv-`
+  public/icon/         # extension icons (publicDir в wxt.config.ts)
 fixtures/              # sample JSON files for manual testing
 store/                 # store listing drafts (step 6)
-public/icon/           # extension icons
 ```
 
 Если конвенции WXT требуют иного расположения файлов (например, `entrypoints/viewer/index.html`) — следуй WXT, сохраняя разделение ответственности.
@@ -89,7 +92,7 @@ public/icon/           # extension icons
 
 `lib/parse.ts`:
 - `parseJson(text: string): { ok: true; value: unknown } | { ok: false; message: string; line?: number; column?: number }`.
-- Позицию ошибки вычислять **самостоятельно** из смещения в сообщении `SyntaxError` (формат сообщений V8 может меняться — извлечь `position N`, если есть, и пересчитать в line/column по исходному тексту). Если позиция не найдена — вернуть только `message`.
+- Позицию ошибки вычислять **самостоятельно** из смещения в сообщении `SyntaxError` (формат сообщений V8 может меняться — извлечь `position N`, если есть, и пересчитать в line/column по исходному тексту). Если позиция не найдена — вернуть только `message`. **Отклонение (раздел 8, п. 2):** если позиции нет в сообщении, она находится запасным строгим сканером JSON; «только `message`» остаётся лишь на случай, когда не помог и он.
 
 `lib/render.ts`:
 - `renderJson(value: unknown): HTMLElement` — рекурсивный обход.
@@ -298,3 +301,24 @@ public/icon/           # extension icons
 - Автоопределение JSON на страницах с `text/plain`.
 - Локализация UI.
 - Copy minified: удаление пробелов из исходного текста вне строк, без round-trip через `JSON.parse`/`stringify` (иначе теряется точность больших чисел и переставляются целочисленные ключи). Естественное место — рядом с Copy value (v1.1).
+
+---
+
+## 8. Отклонения от спецификации и принятые решения
+
+Журнал расхождений между этим документом и реальным проектом. Всё, что отличается от текста выше, должно быть записано здесь.
+
+1. **Раскладка `src/`.** Весь код расширения лежит в `src/` (`entrypoints/`, `lib/`, `public/`), а не в корне, как в исходной версии раздела 3.1. В `wxt.config.ts` заданы `srcDir: "src"` и `publicDir: "src/public"`. `publicDir` нужен явно: при одном `srcDir` WXT 0.20.27 продолжает искать `public/` в корне (проверено на пробном файле). Пути `lib/...` и `entrypoints/...` в остальных разделах читать как `src/lib/...`, `src/entrypoints/...`. Решение владельца. `fixtures/`, `store/` и конфиги остаются в корне.
+2. **Запасной сканер ошибок в `parse.ts`.** Сообщения V8 вида `Unexpected token ']', ... is not valid JSON` не содержат `position N` (проверено на Node 22), поэтому по буквальному тексту 3.2 для `invalid-trailing-comma.json` не было бы строки и столбца, что противоречит проверке Шага 2. Если `position N` есть в сообщении, используется он. Если нет, смещение ищет небольшой строгий сканер JSON; значение по-прежнему даёт только нативный `JSON.parse`. Если и сканер упал (например, на очень глубокой вложенности), возвращается только `message`. Суффикс `(line N column M)` из сообщения V8 удаляется, чтобы не дублировать позицию. Решение владельца. Сканер сверен с `JSON.parse` на 60 000 случайных порч фикстур: расхождений по валидности нет; в 130 из ~34 000 случаев, где позиция есть в сообщении V8, смещение сканера на 1 меньше (во всех просмотренных примерах — ошибки в числах); в таких случаях используется позиция V8.
+3. **Фрагмент исходной строки в ошибке.** Показывается не более 60 символов строки по обе стороны от ошибки, обрезанные края помечаются `…`; иначе на минифицированном JSON маркер `^` уходит за экран. В спеке этого нет. Относится к Шагу 2.
+4. **Процесс.** Ветки `feature/<name>` на каждый шаг и слияние в `master` по подтверждению (правило 5 в разделе 0). Пуш делает владелец. Коммиты без подписи `Co-Authored-By`. Историю один раз переписывали (`SPEC.md` убирали из репозитория и вернули), хеши первых коммитов от этого изменились.
+5. **Окружение разработки.**
+   - Брендированный Google Chrome (в том числе Flatpak) не подходит для `npm run dev`: с версии 137 он игнорирует `--load-extension`. Используется Chrome for Testing в `~/tools/chrome-for-testing/`, путь задаётся переменной `CHROME_PATH` (в `~/.bashrc`). Проверка Шага 1 «`npm run dev` открывает Chrome» относится к нему. Подробности в `README.md`.
+   - `web-ext.config.ts` в `.gitignore` как личный локальный файл; сейчас не используется.
+   - В `package.json` добавлен `postinstall: wxt prepare` (создаёт `.wxt/` и типы). Скрипты из раздела 2 не менялись.
+   - `biome.json` исключает `fixtures/invalid-*.json` и `fixtures/large.json` (намеренно битый и огромный JSON), включено использование `.gitignore`.
+   - Версии: `wxt ~0.20.27`, `typescript ~5.9`, `@biomejs/biome ^2.5.14`. Для Biome патч-диапазон не фиксировался (спека требует его только для WXT).
+6. **Ограничения нативного `JSON.parse`** (принимаются сознательно, точный парсер в бэклоге):
+   - числа за пределами точности `double` теряют её уже при разборе: `12345678901234567890` показывается как `12345678901234567000`, `-1.5e10` как `-15000000000`;
+   - целочисленные ключи объекта (`"1"`, `"2"`) выводятся в порядке возрастания, а не в порядке исходного текста.
+7. **Бэклог.** В раздел 7 добавлен пункт Copy minified.
