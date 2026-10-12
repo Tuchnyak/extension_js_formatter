@@ -23,7 +23,7 @@ There are no UI frameworks (React, Vue, etc.). The interface is built with the p
 
 ### What is manifest.json
 
-Every Chrome extension is described by a `manifest.json` file: name, version, permissions, scripts. **You do not write it by hand**: WXT generates it from `wxt.config.ts` and from the files in `entrypoints/`. After a build you can inspect the result in `.output/chrome-mv3/manifest.json`.
+Every Chrome extension is described by a `manifest.json` file: name, version, permissions, scripts. **You do not write it by hand**: WXT generates it from `wxt.config.ts` and from the files in `src/entrypoints/`. After a build you can inspect the result in `.output/chrome-mv3/manifest.json`.
 
 The project uses Manifest V3: background code runs as a service worker, which the browser may stop and restart at any time.
 
@@ -32,24 +32,25 @@ The project uses Manifest V3: background code runs as a service worker, which th
 Currently in the repository:
 
 ```
-entrypoints/            # extension "entry points"; WXT discovers them by file name
-  background.ts         #   background script: clicking the icon opens viewer.html in a new tab
-  viewer/               #   viewer page (built as viewer.html): textarea, Format button, result area
-    index.html
-    main.ts
-    style.css
-lib/                    # code shared between entry points
-  parse.ts              #   JSON parsing + error position (line/column)
-  render.ts             #   JSON -> DOM tree, and error rendering
-  styles.css            #   shared styles (classes prefixed with jv-)
+src/                    # all extension source code (WXT `srcDir`)
+  entrypoints/          #   extension "entry points"; WXT discovers them by file name
+    background.ts       #     background script: clicking the icon opens viewer.html in a new tab
+    viewer/             #     viewer page (built as viewer.html): textarea, Format button, result area
+      index.html
+      main.ts
+      style.css
+  lib/                  #   code shared between entry points
+    parse.ts            #     JSON parsing + error position (line/column)
+    render.ts           #     JSON -> DOM tree, and error rendering
+    styles.css          #     shared styles (classes prefixed with jv-)
+  public/               #   files copied to the build as-is (extension icons; empty for now, added in step 6)
 fixtures/               # sample JSON files for manual testing
   simple.json           #   flat object
   nested.json           #   deep nesting
   edge-cases.json       #   empty {} and [], unicode, escapes, big number, URLs
   invalid-*.json        #   deliberately broken files (to test error messages)
   generate-large.mjs    #   generator for large.json (~5 MB)
-public/icon/            # extension icons (empty for now, added in step 6)
-wxt.config.ts           # WXT config: name, description, action (toolbar button)
+wxt.config.ts           # WXT config: source dir, name, description, action (toolbar button)
 biome.json              # linter/formatter settings
 tsconfig.json           # TypeScript settings (extends .wxt/tsconfig.json)
 package.json            # dependencies and npm scripts
@@ -72,12 +73,12 @@ fixtures/large.json     # created by generate-large.mjs
 Planned (steps 3–5, `SPEC.md` section 3.1):
 
 ```
-entrypoints/content.ts  # auto-format JSON pages (opened directly by URL)
-lib/toolbar.ts          # Raw/Parsed, Expand/Collapse, theme switch
-lib/theme.ts            # System/Light/Dark theme
+src/entrypoints/content.ts  # auto-format JSON pages (opened directly by URL)
+src/lib/toolbar.ts          # Raw/Parsed, Expand/Collapse, theme switch
+src/lib/theme.ts            # System/Light/Dark theme
 ```
 
-The idea: **one render engine, three entry points**. The `viewer.html` page, the context menu on selected text, and the content script on JSON pages all use the same code from `lib/`.
+The idea: **one render engine, three entry points**. The `viewer.html` page, the context menu on selected text, and the content script on JSON pages all use the same code from `src/lib/`.
 
 ## Initial setup
 
@@ -150,7 +151,18 @@ After code changes, rebuild and click the reload button on the extension card.
 
 ## How the work is organized
 
-Development follows the steps in `SPEC.md`: each step ends with a commit like `v1 step 3: collapsible tree and themes`, followed by a stop for review. The next step starts only after approval.
+Development follows the steps in `SPEC.md`. Each step is built in its own `feature/<name>` branch (e.g. `feature/v1-step-3`) and ends with a commit like `v1 step 3: collapsible tree and themes`, followed by a stop for review. After approval the branch is merged into `master` with `git merge --no-ff`. The next step starts only after that.
+
+## Notes and known limitations
+
+Where the project deliberately differs from `SPEC.md`, the differences are logged in section 8 of that file. In short:
+
+- All extension code lives in `src/`: `wxt.config.ts` sets both `srcDir` and `publicDir` (with `srcDir` alone, WXT keeps looking for `public/` in the project root).
+- The native `JSON.parse` is used for parsing. When its error message has no position (e.g. `Unexpected token ']'...`), a small strict JSON scanner finds the line and column of the error. It is used only to locate the error, never to produce values.
+- Because values come from the native parser, numbers beyond double precision lose it (`12345678901234567890` is shown as `12345678901234567000`), and integer-like object keys (`"1"`, `"2"`) are shown in ascending order rather than source order.
+- `npm install` also runs `wxt prepare` (the `postinstall` script) to generate `.wxt/`.
+- `biome.json` ignores `fixtures/invalid-*.json` and `fixtures/large.json`: one is deliberately broken JSON, the other is huge and generated.
+- `web-ext.config.ts` (personal WXT launcher overrides) is in `.gitignore`. It is not needed when `CHROME_PATH` is set.
 
 ## Hard constraints
 
