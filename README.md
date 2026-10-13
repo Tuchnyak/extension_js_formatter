@@ -78,6 +78,8 @@ Planned (step 5, `SPEC.md` section 3.1):
 src/entrypoints/content.ts  # auto-format JSON pages (opened directly by URL)
 ```
 
+Step 5 also adds an "Auto-format JSON pages" on/off switch in the viewer header (on by default).
+
 The idea: **one render engine, three entry points**. The `viewer.html` page, the context menu on selected text, and the content script on JSON pages all use the same code from `src/lib/`.
 
 ## Initial setup

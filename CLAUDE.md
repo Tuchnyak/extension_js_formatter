@@ -32,7 +32,7 @@ WXT (vanilla + TypeScript, версия `~0.20.x`, не `^`), npm, Biome (оди
 - `src/lib/parse.ts` — обёртка над `JSON.parse`; line/column ошибки считаются самостоятельно: из `position N` в сообщении V8, а если его нет (сообщения `Unexpected token ...` позиции не содержат) — запасным строгим сканером JSON, который только ищет смещение ошибки (решение владельца, отступление от спеки).
 - `src/lib/toolbar.ts` — `renderResult(text)` собирает готовый результат (лимит размера → разбор → дерево + тулбар / ошибка / raw), `createThemeSwitch(root)`; тема живёт в `src/lib/theme.ts` (`storage.local`, CSS `light-dark()`). Collapse/Expand all пересобирают дерево, а не переключают `details.open` (иначе квадратично).
 - `src/lib/render.ts` — `renderJson(value)` строит DOM рекурсивно; `MAX_RENDER_BYTES = 10 MB` — выше дерево не строится, показывается raw + уведомление.
-- Точки входа: (1) `content.ts` на `<all_urls>` подменяет body на JSON-URL (первая строка — проверка `document.contentType`, иначе мгновенный `return`); (2) клик по иконке → `background.ts` открывает `viewer.html` (без popup, нужен `action: {}` в `wxt.config.ts`); (3) контекстное меню на выделении → выделенный текст кладётся в `storage.session` под случайным ключом, открывается `viewer.html?id=<key>`, viewer читает значение и сразу удаляет ключ. Меню создаётся в `runtime.onInstalled` (service worker MV3 не постоянный).
+- Точки входа: (1) `content.ts` на `<all_urls>` подменяет body на JSON-URL (первая строка — проверка `document.contentType`, иначе мгновенный `return`; затем чтение флага `autoFormat`, при `false` — выход без изменений; переключатель флага живёт в заголовке viewer рядом с темой); (2) клик по иконке → `background.ts` открывает `viewer.html` (без popup, нужен `action: {}` в `wxt.config.ts`); (3) контекстное меню на выделении → выделенный текст кладётся в `storage.session` под случайным ключом, открывается `viewer.html?id=<key>`, viewer читает значение и сразу удаляет ключ. Меню создаётся в `runtime.onInstalled` (service worker MV3 не постоянный).
 - v2: `lib/sql.ts` — чистая функция `jsonToInsert`, покрытая Vitest; на JSON-страницах — только кнопка «Open in Viewer» через тот же `storage.session`.
 
 ## Жёсткие ограничения (нарушение = баг)
@@ -41,5 +41,5 @@ WXT (vanilla + TypeScript, версия `~0.20.x`, не `^`), npm, Biome (оди
 - Ноль runtime-зависимостей: парсинг — нативный `JSON.parse`, рендер и подсветка — свой код.
 - Permissions только `contextMenus`, `storage` + host-доступ `<all_urls>` для content script. Любой новый — только после согласования.
 - Никакого `innerHTML` с пользовательскими данными — только `createElement` / `textContent`. Ссылки — только `http:`/`https:`, с `target="_blank"` и `rel="noopener noreferrer"`.
-- Хранятся только тема (`storage.local`) и временно выделенный текст (`storage.session`).
+- Хранятся только тема и флаг автоформата `autoFormat` (`storage.local`; флаг добавляется на Шаге 5, решение владельца) и временно выделенный текст (`storage.session`).
 - Функции сверх спеки не добавлять; бэклог (раздел 7) — только по отдельному решению владельца.
