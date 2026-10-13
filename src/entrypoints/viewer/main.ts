@@ -1,5 +1,6 @@
 import "../../lib/styles.css";
 import "./style.css";
+import { browser } from "wxt/browser";
 import { renderNotice } from "../../lib/render";
 import { createThemeSwitch, renderResult } from "../../lib/toolbar";
 
@@ -30,3 +31,21 @@ input.addEventListener("keydown", (event) => {
 		format();
 	}
 });
+
+// Opened from the context menu: the selection waits in storage.session under `?id=`.
+// It is deleted on read, so a reloaded tab simply shows an empty viewer.
+async function loadSelection() {
+	const id = new URLSearchParams(location.search).get("id");
+	if (!id) return;
+	try {
+		const text = (await browser.storage.session.get(id))[id];
+		await browser.storage.session.remove(id);
+		if (typeof text !== "string") return;
+		input.value = text;
+		format();
+	} catch {
+		// storage unavailable: leave the viewer empty
+	}
+}
+
+void loadSelection();
