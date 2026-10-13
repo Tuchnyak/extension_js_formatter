@@ -7,6 +7,6 @@ export default defineConfig({
 		name: "<EXTENSION_NAME>",
 		description: "<EXTENSION_DESCRIPTION>",
 		action: {},
-		permissions: ["storage"],
+		permissions: ["contextMenus", "storage"],
 	},
 });
