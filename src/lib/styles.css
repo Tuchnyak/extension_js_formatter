@@ -153,3 +153,43 @@
 	font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 	font-size: 14px;
 }
+
+.jv-check {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	cursor: pointer;
+}
+
+.jv-consent {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0 12px;
+}
+
+/* A formatted JSON page (content script): <html class="jv-app"> with our content in <body>. */
+.jv-app > body {
+	margin: 0;
+	background: var(--jv-bg);
+	color: var(--jv-fg);
+}
+
+.jv-page {
+	padding: 16px;
+	font-family: system-ui, sans-serif;
+}
+
+.jv-page-header {
+	display: flex;
+	justify-content: flex-end;
+	margin-bottom: 8px;
+}
+
+/* A message put above the untouched original page (invalid / too large / needs consent). */
+.jv-banner {
+	padding: 4px 16px;
+	background: var(--jv-bg);
+	color: var(--jv-fg);
+	font-family: system-ui, sans-serif;
+}

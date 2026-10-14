@@ -6,7 +6,7 @@ The full specification and step-by-step plan live in [`SPEC.md`](SPEC.md) (in Ru
 
 ## Status
 
-**Steps 1–4** are implemented: clicking the extension icon opens the viewer page, where you paste JSON and press Format (or Ctrl/Cmd+Enter) to get a colored tree with collapsible nodes, clickable `http(s)` links, a Raw/Parsed toggle, Expand/Collapse all and a System/Light/Dark theme (saved between sessions). Invalid JSON shows an error with line, column and a caret marker. Selecting text on any page and choosing **Format selected JSON** from the right-click menu opens it in the viewer, already formatted. Auto-formatting of JSON pages comes in step 5. The "Planned" blocks below describe what is not in the repository yet.
+**Steps 1–5** are implemented: clicking the extension icon opens the viewer page, where you paste JSON and press Format (or Ctrl/Cmd+Enter) to get a colored tree with collapsible nodes, clickable `http(s)` links, a Raw/Parsed toggle, Expand/Collapse all and a System/Light/Dark theme (saved between sessions). Invalid JSON shows an error with line, column and a caret marker. Selecting text on any page and choosing **Format selected JSON** from the right-click menu opens it in the viewer, already formatted. A JSON response opened directly in a tab (content types `application/json`, `text/json`, `*+json`) is formatted automatically; the "Auto-format JSON pages" switch in the viewer header turns this off. Inputs above roughly 2 MB are not formatted silently: the raw text is shown with a "Format anyway" button.
 
 ## The stack in plain words
 
@@ -35,6 +35,7 @@ Currently in the repository:
 src/                    # all extension source code (WXT `srcDir`)
   entrypoints/          #   extension "entry points"; WXT discovers them by file name
     background.ts       #     background script: clicking the icon opens viewer.html in a new tab; context menu on selected text
+    content.ts          #     content script: auto-formats JSON pages (matches all URLs, exits at once on non-JSON)
     viewer/             #     viewer page (built as viewer.html): textarea, Format button, result area
       index.html
       main.ts
@@ -42,7 +43,8 @@ src/                    # all extension source code (WXT `srcDir`)
   lib/                  #   code shared between entry points
     parse.ts            #     JSON parsing + error position (line/column)
     render.ts           #     JSON -> DOM tree (collapsible <details>), raw text, errors
-    toolbar.ts          #     Raw/Parsed, Expand/Collapse all, theme switch; renderResult() builds a full result
+    toolbar.ts          #     Raw/Parsed, Expand/Collapse all, theme and auto-format switches; formatText() builds a full result
+    settings.ts         #     auto-format on/off flag, persisted in storage.local
     theme.ts            #     System/Light/Dark theme, persisted in storage.local
     styles.css          #     shared styles and theme colors (classes prefixed with jv-)
   public/               #   files copied to the build as-is (extension icons; empty for now, added in step 6)
@@ -71,14 +73,6 @@ node_modules/           # installed dependencies
   *.zip                 #   archive for the store (npm run zip)
 fixtures/large.json     # created by generate-large.mjs
 ```
-
-Planned (step 5, `SPEC.md` section 3.1):
-
-```
-src/entrypoints/content.ts  # auto-format JSON pages (opened directly by URL)
-```
-
-Step 5 also adds an "Auto-format JSON pages" on/off switch in the viewer header (on by default). Large inputs (above roughly 2 MB) will not be formatted silently: the raw text is shown with a "Format anyway" button, because rendering takes about 5 s per MB.
 
 The idea: **one render engine, three entry points**. The `viewer.html` page, the context menu on selected text, and the content script on JSON pages all use the same code from `src/lib/`.
 
@@ -162,7 +156,8 @@ Where the project deliberately differs from `SPEC.md`, the differences are logge
 - All extension code lives in `src/`: `wxt.config.ts` sets both `srcDir` and `publicDir` (with `srcDir` alone, WXT keeps looking for `public/` in the project root).
 - The native `JSON.parse` is used for parsing. When its error message has no position (e.g. `Unexpected token ']'...`), a small strict JSON scanner finds the line and column of the error. It is used only to locate the error, never to produce values.
 - Because values come from the native parser, numbers beyond double precision lose it (`12345678901234567890` is shown as `12345678901234567000`), and integer-like object keys (`"1"`, `"2"`) are shown in ascending order rather than source order.
-- Themes use CSS `light-dark()` (Chrome 123+). Permissions so far: `storage` (theme preference, and `storage.session` to hand the selected text to the viewer) and `contextMenus` (the right-click item). The selection is deleted from storage as soon as the viewer reads it.
+- Themes use CSS `light-dark()` (Chrome 123+). Permissions: `storage` (theme and auto-format preferences, and `storage.session` to hand the selected text to the viewer), `contextMenus` (the right-click item), and access to all sites for the content script, which is what makes Chrome warn that the extension can read and change data on all websites. The content script looks at a page only if its content type is JSON, and never sends anything anywhere. The selected text is deleted from storage as soon as the viewer reads it.
+- On a JSON page the original text stays untouched when the JSON is invalid, too large (over 10 MB) or needs consent (over 2 MB); a message appears above it instead. Local `file://` pages are formatted only if "Allow access to file URLs" is enabled for the extension in `chrome://extensions`. JSON served as `text/plain` is not detected.
 - Rendering is plain DOM, about 2.5–3.5 s per MB of JSON; a 5 MB file takes roughly 13–17 s during which the tab is unresponsive. Collapse/Expand all rebuild the tree (closing thousands of existing `<details>` is quadratic in Chrome). Inputs over 10 MB are shown as raw text only.
 - `npm install` also runs `wxt prepare` (the `postinstall` script) to generate `.wxt/`.
 - `biome.json` ignores `fixtures/invalid-*.json` and `fixtures/large.json`: one is deliberately broken JSON, the other is huge and generated.

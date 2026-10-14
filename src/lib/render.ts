@@ -1,6 +1,10 @@
 import type { ParseError } from "./parse";
 
 export const MAX_RENDER_BYTES = 10 * 1024 * 1024;
+// Above this size the tree is built only after the user agrees (rendering takes seconds per MB).
+export const CONSENT_BYTES = 2 * 1024 * 1024;
+// Rough rendering speed measured on the owner's machine, used only for the time estimate.
+export const SECONDS_PER_MB = 5;
 
 // Max characters of the offending source line shown on each side of the error
 const ERROR_CONTEXT = 60;
