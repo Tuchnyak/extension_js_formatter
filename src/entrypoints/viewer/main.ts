@@ -1,8 +1,14 @@
 import "../../lib/styles.css";
 import "./style.css";
 import { browser } from "wxt/browser";
-import { renderNotice } from "../../lib/render";
-import { createThemeSwitch, renderResult } from "../../lib/toolbar";
+import { renderNotice, renderRaw } from "../../lib/render";
+import {
+	afterPaint,
+	createAutoFormatSwitch,
+	createThemeSwitch,
+	formatText,
+	renderOutcome,
+} from "../../lib/toolbar";
 
 function byId<T extends HTMLElement>(id: string): T {
 	const node = document.getElementById(id);
@@ -13,15 +19,37 @@ function byId<T extends HTMLElement>(id: string): T {
 const input = byId<HTMLTextAreaElement>("input");
 const result = byId<HTMLElement>("result");
 
-byId("theme").append(createThemeSwitch(document.documentElement));
+byId("controls").append(
+	createThemeSwitch(document.documentElement),
+	createAutoFormatSwitch(),
+);
+
+function show(text: string, consented = false) {
+	const outcome = formatText(text, consented);
+	if (outcome.kind === "view") {
+		result.replaceChildren(outcome.element);
+		return;
+	}
+	const message = renderOutcome(outcome, text, () => {
+		result.replaceChildren(renderNotice("Formatting…"));
+		afterPaint(() => show(text, true));
+	});
+	// an invalid input is explained by the error alone; otherwise show the text itself
+	result.replaceChildren(
+		message,
+		...(outcome.kind === "invalid" ? [] : [renderRaw(text)]),
+	);
+}
 
 function format() {
 	const text = input.value;
-	result.replaceChildren(
-		text.trim() === ""
-			? renderNotice("Nothing to format. Paste some JSON first.")
-			: renderResult(text),
-	);
+	if (text.trim() === "") {
+		result.replaceChildren(
+			renderNotice("Nothing to format. Paste some JSON first."),
+		);
+		return;
+	}
+	show(text);
 }
 
 byId("format").addEventListener("click", format);
