@@ -1,4 +1,4 @@
-# JSON Viewer (working title `<EXTENSION_NAME>`)
+# Curly - JSON Formatter & Tree Viewer
 
 A Chrome extension that displays JSON in a clear and safe way. It works fully offline: no network requests, no analytics, no runtime dependencies.
 
@@ -47,7 +47,7 @@ src/                    # all extension source code (WXT `srcDir`)
     settings.ts         #     auto-format on/off flag, persisted in storage.local
     theme.ts            #     System/Light/Dark theme, persisted in storage.local
     styles.css          #     shared styles and theme colors (classes prefixed with jv-)
-  public/               #   files copied to the build as-is (extension icons; empty for now, added in step 6)
+  public/icon/          #   extension icons (16/32/48/128 px; placeholders drawn for now, to be replaced)
 fixtures/               # sample JSON files for manual testing
   simple.json           #   flat object
   nested.json           #   deep nesting
