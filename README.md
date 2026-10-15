@@ -48,6 +48,7 @@ src/                    # all extension source code (WXT `srcDir`)
     theme.ts            #     System/Light/Dark theme, persisted in storage.local
     styles.css          #     shared styles and theme colors (classes prefixed with jv-)
   public/icon/          #   extension icons (16/32/48/128 px; placeholders drawn for now, to be replaced)
+store/                  # Chrome Web Store listing drafts: description, single purpose, permission justification, privacy policy
 fixtures/               # sample JSON files for manual testing
   simple.json           #   flat object
   nested.json           #   deep nesting
