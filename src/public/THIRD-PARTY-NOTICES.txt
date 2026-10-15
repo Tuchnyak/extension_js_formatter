@@ -1,0 +1,63 @@
+Curly - JSON Formatter & Tree Viewer
+Copyright (C) 2026 <AUTHOR: to be filled in before publishing>
+
+This extension is free software, licensed under the GNU General Public License
+version 3 (SPDX: GPL-3.0-only). The full license text is in the file LICENSE in
+this package.
+
+
+SOURCE CODE
+===========
+
+The complete source code of this extension, with the instructions to build this
+package from it (see README.md), is available at:
+
+  https://github.com/Tuchnyak/extension_js_formatter
+
+The code in this package is minified. The unminified source is in the
+repository above.
+
+
+THIRD-PARTY SOFTWARE INCLUDED IN THIS PACKAGE
+=============================================
+
+The extension has no runtime dependencies. The build tool WXT adds a small
+amount of its own code to the package (helpers for content scripts and
+background scripts, and a one-line selector of the "browser" API object):
+
+  1. WXT
+     Version:  0.20.27
+     License:  MIT
+     Website:  https://wxt.dev
+     Source:   https://github.com/wxt-dev/wxt
+
+  2. @wxt-dev/browser (part of the WXT repository, directory packages/browser)
+     Version:  0.2.9
+     License:  MIT
+     Source:   https://github.com/wxt-dev/wxt/tree/main/packages/browser
+
+The license text of both components follows.
+
+-------------------------------------------------------------------------------
+MIT License
+
+Copyright (c) 2023 Aaron
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-------------------------------------------------------------------------------

@@ -170,6 +170,28 @@ Copyright (C) 2026 <AUTHOR: to be filled in before publishing>
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License version 3 (SPDX: `GPL-3.0-only`). It is distributed in the hope that it will be useful, but without any warranty. The full text is in [`LICENSE`](LICENSE).
 
+`src/public/LICENSE` is a copy of that file; it is shipped inside the extension package next to `THIRD-PARTY-NOTICES.txt`. Keep both copies identical.
+
+## Third-party software
+
+**Included in the extension package** (the extension has no runtime dependencies; the build tool adds a small part of its own code). Their license notices are in [`src/public/THIRD-PARTY-NOTICES.txt`](src/public/THIRD-PARTY-NOTICES.txt), which ships inside the package:
+
+| Component | Version | License | Link |
+|---|---|---|---|
+| WXT | 0.20.27 | MIT | https://wxt.dev, https://github.com/wxt-dev/wxt |
+| @wxt-dev/browser | 0.2.9 | MIT | https://github.com/wxt-dev/wxt/tree/main/packages/browser |
+
+**Development tools only** (used to build and check the code, not included in the package):
+
+| Tool | License | Link |
+|---|---|---|
+| Vite (used by WXT) | MIT | https://vite.dev |
+| TypeScript | Apache-2.0 | https://www.typescriptlang.org |
+| Biome | MIT OR Apache-2.0 | https://biomejs.dev |
+| Chrome for Testing (manual testing in `npm run dev`) | see its own license | https://googlechromelabs.github.io/chrome-for-testing/ |
+
+When a dependency is added or upgraded, update this section and `THIRD-PARTY-NOTICES.txt` to match what actually ends up in the bundle.
+
 ## Hard constraints
 
 - Zero network requests; everything works offline.

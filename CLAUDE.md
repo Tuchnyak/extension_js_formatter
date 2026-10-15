@@ -42,4 +42,5 @@ WXT (vanilla + TypeScript, версия `~0.20.x`, не `^`), npm, Biome (оди
 - Permissions только `contextMenus`, `storage` + host-доступ `<all_urls>` для content script. Любой новый — только после согласования.
 - Никакого `innerHTML` с пользовательскими данными — только `createElement` / `textContent`. Ссылки — только `http:`/`https:`, с `target="_blank"` и `rel="noopener noreferrer"`.
 - Хранятся только тема и флаг автоформата `jv-auto-format` (`storage.local`; решение владельца) и временно выделенный текст (`storage.session`).
+- Лицензия проекта GPL-3.0-only (`LICENSE` в корне и её точная копия в `src/public/LICENSE`, попадает в zip). Сторонний код в сборке перечислен в `src/public/THIRD-PARTY-NOTICES.txt` и в README; при добавлении или обновлении зависимости сверять по реальному составу бандла и обновлять оба места.
 - Функции сверх спеки не добавлять; бэклог (раздел 7) — только по отдельному решению владельца.

@@ -39,3 +39,7 @@ Good to know
 - Very large JSON is handled carefully: above about 2 MB the extension asks before formatting (it can take several seconds per MB), and above 10 MB it shows the raw text only.
 - For local files (file://) turn on "Allow access to file URLs" for the extension in chrome://extensions.
 - The interface is in English. Requires Chrome 123 or newer.
+
+Source code and license
+
+Curly is free software under the GNU General Public License version 3. The source code is at https://github.com/Tuchnyak/extension_js_formatter. The extension package includes the license and the notices for the third-party components it contains (WXT, MIT license).
