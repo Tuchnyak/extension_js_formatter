@@ -164,6 +164,12 @@ Where the project deliberately differs from `SPEC.md`, the differences are logge
 - `biome.json` ignores `fixtures/invalid-*.json` and `fixtures/large.json`: one is deliberately broken JSON, the other is huge and generated.
 - `web-ext.config.ts` (personal WXT launcher overrides) is in `.gitignore`. It is not needed when `CHROME_PATH` is set.
 
+## License
+
+Copyright (C) 2026 <AUTHOR: to be filled in before publishing>
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License version 3 (SPDX: `GPL-3.0-only`). It is distributed in the hope that it will be useful, but without any warranty. The full text is in [`LICENSE`](LICENSE).
+
 ## Hard constraints
 
 - Zero network requests; everything works offline.
