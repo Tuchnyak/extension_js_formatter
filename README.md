@@ -104,7 +104,7 @@ Run all commands from the project root.
 |---|---|
 | `npm run dev` | Builds the extension into `.output/chrome-mv3-dev/`, opens Chrome for Testing with the extension loaded, and watches files: after a code change it rebuilds and reloads the extension automatically. |
 | `npm run build` | Production build into `.output/chrome-mv3/`. Check the resulting `manifest.json` (it must not contain extra permissions). |
-| `npm run zip` | Builds and packs the extension into `.output/*.zip` for upload to the Chrome Web Store. |
+| `npm run zip` | Builds and packs the extension into `.output/json-viewer-extension-<version>-chrome.zip` for upload to the Chrome Web Store (the archive name comes from the package name in `package.json`). |
 
 **How to stop `npm run dev`:** press `Ctrl+C` in the terminal where it is running. WXT closes the browser itself. If something hangs:
 ```

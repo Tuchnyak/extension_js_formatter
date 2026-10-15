@@ -3,6 +3,8 @@ import { defineConfig } from "wxt";
 export default defineConfig({
 	srcDir: "src",
 	publicDir: "src/public",
+	// Vite's modulepreload polyfill contains a fetch() call; Chrome supports modulepreload natively.
+	vite: () => ({ build: { modulePreload: { polyfill: false } } }),
 	manifest: {
 		name: "Curly - JSON Formatter & Tree Viewer",
 		short_name: "Curly",
