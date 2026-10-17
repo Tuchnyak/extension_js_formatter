@@ -8,6 +8,8 @@ export const THEMES = [
 	"frappe",
 	"macchiato",
 	"mocha",
+	"dracula",
+	"gruvbox",
 ] as const;
 export type Theme = (typeof THEMES)[number];
 
