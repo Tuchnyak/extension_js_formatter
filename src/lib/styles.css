@@ -101,7 +101,7 @@
 	--jv-red: #f38ba8;
 }
 
-/* Dracula (https://draculatheme.com/contribute) and Gruvbox dark, medium contrast
+/* Dracula (https://draculatheme.com/contribute) and Gruvbox, medium contrast
    (https://github.com/morhetz/gruvbox). Dracula's comment color is lightened for text. */
 .jv-app[data-jv-theme="dracula"] {
 	color-scheme: dark;
@@ -120,7 +120,7 @@
 	--jv-red: #ff5555;
 }
 
-.jv-app[data-jv-theme="gruvbox"] {
+.jv-app[data-jv-theme="gruvbox-dark"] {
 	color-scheme: dark;
 	--jv-bg: #282828;
 	--jv-surface: #1d2021;
@@ -137,12 +137,30 @@
 	--jv-red: #fb4934;
 }
 
+.jv-app[data-jv-theme="gruvbox-light"] {
+	color-scheme: light;
+	--jv-bg: #fbf1c7;
+	--jv-surface: #f2e5bc;
+	--jv-fg: #3c3836;
+	--jv-muted: #7c6f64;
+	--jv-key: #076678;
+	--jv-string: #79740e;
+	--jv-number: #8f3f71;
+	--jv-boolean: #af3a03;
+	--jv-guide: #ebdbb2;
+	--jv-hover: #ebdbb2;
+	--jv-border: #d5c4a1;
+	--jv-active: #d5c4a1;
+	--jv-red: #9d0006;
+}
+
 .jv-app[data-jv-theme="latte"],
 .jv-app[data-jv-theme="frappe"],
 .jv-app[data-jv-theme="macchiato"],
 .jv-app[data-jv-theme="mocha"],
 .jv-app[data-jv-theme="dracula"],
-.jv-app[data-jv-theme="gruvbox"] {
+.jv-app[data-jv-theme="gruvbox-dark"],
+.jv-app[data-jv-theme="gruvbox-light"] {
 	--jv-error-border: var(--jv-red);
 	--jv-error-bg: color-mix(in srgb, var(--jv-red) 14%, var(--jv-bg));
 	--jv-error-fg: var(--jv-fg);

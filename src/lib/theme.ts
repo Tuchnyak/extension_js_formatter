@@ -9,7 +9,8 @@ export const THEMES = [
 	"macchiato",
 	"mocha",
 	"dracula",
-	"gruvbox",
+	"gruvbox-dark",
+	"gruvbox-light",
 ] as const;
 export type Theme = (typeof THEMES)[number];
 

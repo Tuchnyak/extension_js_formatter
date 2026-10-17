@@ -21,7 +21,8 @@ const THEME_LABELS: Record<Theme, string> = {
 	macchiato: "Catppuccin Macchiato",
 	mocha: "Catppuccin Mocha",
 	dracula: "Dracula",
-	gruvbox: "Gruvbox Dark",
+	"gruvbox-dark": "Gruvbox Dark",
+	"gruvbox-light": "Gruvbox Light",
 };
 
 function button(label: string, onClick: () => void): HTMLButtonElement {
