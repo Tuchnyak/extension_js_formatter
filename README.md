@@ -1,4 +1,4 @@
-# JSON Viewer (working title `<EXTENSION_NAME>`)
+# Curly - JSON Formatter & Tree Viewer
 
 A Chrome extension that displays JSON in a clear and safe way. It works fully offline: no network requests, no analytics, no runtime dependencies.
 
@@ -6,7 +6,7 @@ The full specification and step-by-step plan live in [`SPEC.md`](SPEC.md) (in Ru
 
 ## Status
 
-**Steps 1–5** are implemented: clicking the extension icon opens the viewer page, where you paste JSON and press Format (or Ctrl/Cmd+Enter) to get a colored tree with collapsible nodes, clickable `http(s)` links, a Raw/Parsed toggle, Expand/Collapse all and a System/Light/Dark theme (saved between sessions). Invalid JSON shows an error with line, column and a caret marker. Selecting text on any page and choosing **Format selected JSON** from the right-click menu opens it in the viewer, already formatted. A JSON response opened directly in a tab (content types `application/json`, `text/json`, `*+json`) is formatted automatically; the "Auto-format JSON pages" switch in the viewer header turns this off. Inputs above roughly 2 MB are not formatted silently: the raw text is shown with a "Format anyway" button.
+**Version 1.0.0 is implemented (steps 1–6)**: clicking the extension icon opens the viewer page, where you paste JSON and press Format (or Ctrl/Cmd+Enter) to get a colored tree with collapsible nodes, clickable `http(s)` links, a Raw/Parsed toggle, Expand/Collapse all and a System/Light/Dark theme (saved between sessions). Invalid JSON shows an error with line, column and a caret marker. Selecting text on any page and choosing **Format selected JSON** from the right-click menu opens it in the viewer, already formatted. A JSON response opened directly in a tab (content types `application/json`, `text/json`, `*+json`) is formatted automatically; the "Auto-format JSON pages" switch in the viewer header turns this off. Inputs above roughly 2 MB are not formatted silently: the raw text is shown with a "Format anyway" button.
 
 ## The stack in plain words
 
@@ -47,7 +47,8 @@ src/                    # all extension source code (WXT `srcDir`)
     settings.ts         #     auto-format on/off flag, persisted in storage.local
     theme.ts            #     System/Light/Dark theme, persisted in storage.local
     styles.css          #     shared styles and theme colors (classes prefixed with jv-)
-  public/               #   files copied to the build as-is (extension icons; empty for now, added in step 6)
+  public/icon/          #   extension icons (16/32/48/128 px; placeholders drawn for now, to be replaced)
+store/                  # Chrome Web Store listing drafts: description, single purpose, permission justification, privacy policy
 fixtures/               # sample JSON files for manual testing
   simple.json           #   flat object
   nested.json           #   deep nesting
@@ -104,7 +105,7 @@ Run all commands from the project root.
 |---|---|
 | `npm run dev` | Builds the extension into `.output/chrome-mv3-dev/`, opens Chrome for Testing with the extension loaded, and watches files: after a code change it rebuilds and reloads the extension automatically. |
 | `npm run build` | Production build into `.output/chrome-mv3/`. Check the resulting `manifest.json` (it must not contain extra permissions). |
-| `npm run zip` | Builds and packs the extension into `.output/*.zip` for upload to the Chrome Web Store. |
+| `npm run zip` | Builds and packs the extension into `.output/json-viewer-extension-<version>-chrome.zip` for upload to the Chrome Web Store (the archive name comes from the package name in `package.json`). |
 
 **How to stop `npm run dev`:** press `Ctrl+C` in the terminal where it is running. WXT closes the browser itself. If something hangs:
 ```
@@ -156,12 +157,40 @@ Where the project deliberately differs from `SPEC.md`, the differences are logge
 - All extension code lives in `src/`: `wxt.config.ts` sets both `srcDir` and `publicDir` (with `srcDir` alone, WXT keeps looking for `public/` in the project root).
 - The native `JSON.parse` is used for parsing. When its error message has no position (e.g. `Unexpected token ']'...`), a small strict JSON scanner finds the line and column of the error. It is used only to locate the error, never to produce values.
 - Because values come from the native parser, numbers beyond double precision lose it (`12345678901234567890` is shown as `12345678901234567000`), and integer-like object keys (`"1"`, `"2"`) are shown in ascending order rather than source order.
-- Themes use CSS `light-dark()` (Chrome 123+). Permissions: `storage` (theme and auto-format preferences, and `storage.session` to hand the selected text to the viewer), `contextMenus` (the right-click item), and access to all sites for the content script, which is what makes Chrome warn that the extension can read and change data on all websites. The content script looks at a page only if its content type is JSON, and never sends anything anywhere. The selected text is deleted from storage as soon as the viewer reads it.
+- Themes use CSS `light-dark()`, so the manifest requires Chrome 123 or newer. Permissions: `storage` (theme and auto-format preferences, and `storage.session` to hand the selected text to the viewer), `contextMenus` (the right-click item), and access to all sites for the content script, which is what makes Chrome warn that the extension can read and change data on all websites. The content script looks at a page only if its content type is JSON, and never sends anything anywhere. The selected text is deleted from storage as soon as the viewer reads it.
 - On a JSON page the original text stays untouched when the JSON is invalid, too large (over 10 MB) or needs consent (over 2 MB); a message appears above it instead. Local `file://` pages are formatted only if "Allow access to file URLs" is enabled for the extension in `chrome://extensions`. JSON served as `text/plain` is not detected.
 - Rendering is plain DOM, about 2.5–3.5 s per MB of JSON; a 5 MB file takes roughly 13–17 s during which the tab is unresponsive. Collapse/Expand all rebuild the tree (closing thousands of existing `<details>` is quadratic in Chrome). Inputs over 10 MB are shown as raw text only.
 - `npm install` also runs `wxt prepare` (the `postinstall` script) to generate `.wxt/`.
 - `biome.json` ignores `fixtures/invalid-*.json` and `fixtures/large.json`: one is deliberately broken JSON, the other is huge and generated.
 - `web-ext.config.ts` (personal WXT launcher overrides) is in `.gitignore`. It is not needed when `CHROME_PATH` is set.
+
+## License
+
+Copyright (C) 2026 <AUTHOR: to be filled in before publishing>
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License version 3 (SPDX: `GPL-3.0-only`). It is distributed in the hope that it will be useful, but without any warranty. The full text is in [`LICENSE`](LICENSE).
+
+`src/public/LICENSE` is a copy of that file; it is shipped inside the extension package next to `THIRD-PARTY-NOTICES.txt`. Keep both copies identical.
+
+## Third-party software
+
+**Included in the extension package** (the extension has no runtime dependencies; the build tool adds a small part of its own code). Their license notices are in [`src/public/THIRD-PARTY-NOTICES.txt`](src/public/THIRD-PARTY-NOTICES.txt), which ships inside the package:
+
+| Component | Version | License | Link |
+|---|---|---|---|
+| WXT | 0.20.27 | MIT | https://wxt.dev, https://github.com/wxt-dev/wxt |
+| @wxt-dev/browser | 0.2.9 | MIT | https://github.com/wxt-dev/wxt/tree/main/packages/browser |
+
+**Development tools only** (used to build and check the code, not included in the package):
+
+| Tool | License | Link |
+|---|---|---|
+| Vite (used by WXT) | MIT | https://vite.dev |
+| TypeScript | Apache-2.0 | https://www.typescriptlang.org |
+| Biome | MIT OR Apache-2.0 | https://biomejs.dev |
+| Chrome for Testing (manual testing in `npm run dev`) | see its own license | https://googlechromelabs.github.io/chrome-for-testing/ |
+
+When a dependency is added or upgraded, update this section and `THIRD-PARTY-NOTICES.txt` to match what actually ends up in the bundle.
 
 ## Hard constraints
 
