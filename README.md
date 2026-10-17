@@ -6,7 +6,7 @@ The full specification and step-by-step plan live in [`SPEC.md`](SPEC.md) (in Ru
 
 ## Status
 
-**Steps 1–5** are implemented: clicking the extension icon opens the viewer page, where you paste JSON and press Format (or Ctrl/Cmd+Enter) to get a colored tree with collapsible nodes, clickable `http(s)` links, a Raw/Parsed toggle, Expand/Collapse all and a System/Light/Dark theme (saved between sessions). Invalid JSON shows an error with line, column and a caret marker. Selecting text on any page and choosing **Format selected JSON** from the right-click menu opens it in the viewer, already formatted. A JSON response opened directly in a tab (content types `application/json`, `text/json`, `*+json`) is formatted automatically; the "Auto-format JSON pages" switch in the viewer header turns this off. Inputs above roughly 2 MB are not formatted silently: the raw text is shown with a "Format anyway" button.
+**Version 1.0.0 is implemented (steps 1–6)**: clicking the extension icon opens the viewer page, where you paste JSON and press Format (or Ctrl/Cmd+Enter) to get a colored tree with collapsible nodes, clickable `http(s)` links, a Raw/Parsed toggle, Expand/Collapse all and a System/Light/Dark theme (saved between sessions). Invalid JSON shows an error with line, column and a caret marker. Selecting text on any page and choosing **Format selected JSON** from the right-click menu opens it in the viewer, already formatted. A JSON response opened directly in a tab (content types `application/json`, `text/json`, `*+json`) is formatted automatically; the "Auto-format JSON pages" switch in the viewer header turns this off. Inputs above roughly 2 MB are not formatted silently: the raw text is shown with a "Format anyway" button.
 
 ## The stack in plain words
 
