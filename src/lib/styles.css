@@ -13,6 +13,11 @@
 	--jv-punct: var(--jv-muted);
 	--jv-guide: light-dark(#d9dce1, #3a3e45);
 	--jv-active: light-dark(#dbe8fb, #2b4a73);
+	--jv-surface: light-dark(#f6f8fa, #25282d);
+	--jv-hover: light-dark(#eaeef2, #30343a);
+	--jv-border: light-dark(#d0d7de, #3a3e45);
+	--jv-accent: var(--jv-key);
+	--jv-radius: 6px;
 	--jv-error-bg: light-dark(#fdecea, #3b1a17);
 	--jv-error-border: light-dark(#d93025, #f28b82);
 	--jv-error-fg: light-dark(#5f1a14, #f9c4bf);
@@ -26,6 +31,141 @@
 	color-scheme: dark;
 }
 
+/* Catppuccin flavors (https://catppuccin.com/palette): base, mantle, text, subtext0,
+   surface0/1, blue, green, peach, mauve, red. The rule below derives the rest. */
+.jv-app[data-jv-theme="latte"] {
+	color-scheme: light;
+	--jv-bg: #eff1f5;
+	--jv-surface: #e6e9ef;
+	--jv-fg: #4c4f69;
+	--jv-muted: #6c6f85;
+	--jv-key: #1e66f5;
+	--jv-string: #40a02b;
+	--jv-number: #fe640b;
+	--jv-boolean: #8839ef;
+	--jv-guide: #ccd0da;
+	--jv-hover: #ccd0da;
+	--jv-border: #bcc0cc;
+	--jv-active: #bcc0cc;
+	--jv-red: #d20f39;
+}
+
+.jv-app[data-jv-theme="frappe"] {
+	color-scheme: dark;
+	--jv-bg: #303446;
+	--jv-surface: #292c3c;
+	--jv-fg: #c6d0f5;
+	--jv-muted: #a5adce;
+	--jv-key: #8caaee;
+	--jv-string: #a6d189;
+	--jv-number: #ef9f76;
+	--jv-boolean: #ca9ee6;
+	--jv-guide: #414559;
+	--jv-hover: #414559;
+	--jv-border: #51576d;
+	--jv-active: #51576d;
+	--jv-red: #e78284;
+}
+
+.jv-app[data-jv-theme="macchiato"] {
+	color-scheme: dark;
+	--jv-bg: #24273a;
+	--jv-surface: #1e2030;
+	--jv-fg: #cad3f5;
+	--jv-muted: #a5adcb;
+	--jv-key: #8aadf4;
+	--jv-string: #a6da95;
+	--jv-number: #f5a97f;
+	--jv-boolean: #c6a0f6;
+	--jv-guide: #363a4f;
+	--jv-hover: #363a4f;
+	--jv-border: #494d64;
+	--jv-active: #494d64;
+	--jv-red: #ed8796;
+}
+
+.jv-app[data-jv-theme="mocha"] {
+	color-scheme: dark;
+	--jv-bg: #1e1e2e;
+	--jv-surface: #181825;
+	--jv-fg: #cdd6f4;
+	--jv-muted: #a6adc8;
+	--jv-key: #89b4fa;
+	--jv-string: #a6e3a1;
+	--jv-number: #fab387;
+	--jv-boolean: #cba6f7;
+	--jv-guide: #313244;
+	--jv-hover: #313244;
+	--jv-border: #45475a;
+	--jv-active: #45475a;
+	--jv-red: #f38ba8;
+}
+
+/* Dracula (https://draculatheme.com/contribute) and Gruvbox, medium contrast
+   (https://github.com/morhetz/gruvbox). Dracula's comment color is lightened for text. */
+.jv-app[data-jv-theme="dracula"] {
+	color-scheme: dark;
+	--jv-bg: #282a36;
+	--jv-surface: #21222c;
+	--jv-fg: #f8f8f2;
+	--jv-muted: #7f8dc2;
+	--jv-key: #8be9fd;
+	--jv-string: #f1fa8c;
+	--jv-number: #bd93f9;
+	--jv-boolean: #ff79c6;
+	--jv-guide: #44475a;
+	--jv-hover: #343746;
+	--jv-border: #44475a;
+	--jv-active: #44475a;
+	--jv-red: #ff5555;
+}
+
+.jv-app[data-jv-theme="gruvbox-dark"] {
+	color-scheme: dark;
+	--jv-bg: #282828;
+	--jv-surface: #1d2021;
+	--jv-fg: #ebdbb2;
+	--jv-muted: #a89984;
+	--jv-key: #83a598;
+	--jv-string: #b8bb26;
+	--jv-number: #d3869b;
+	--jv-boolean: #fe8019;
+	--jv-guide: #3c3836;
+	--jv-hover: #3c3836;
+	--jv-border: #504945;
+	--jv-active: #504945;
+	--jv-red: #fb4934;
+}
+
+.jv-app[data-jv-theme="gruvbox-light"] {
+	color-scheme: light;
+	--jv-bg: #fbf1c7;
+	--jv-surface: #f2e5bc;
+	--jv-fg: #3c3836;
+	--jv-muted: #7c6f64;
+	--jv-key: #076678;
+	--jv-string: #79740e;
+	--jv-number: #8f3f71;
+	--jv-boolean: #af3a03;
+	--jv-guide: #ebdbb2;
+	--jv-hover: #ebdbb2;
+	--jv-border: #d5c4a1;
+	--jv-active: #d5c4a1;
+	--jv-red: #9d0006;
+}
+
+.jv-app[data-jv-theme="latte"],
+.jv-app[data-jv-theme="frappe"],
+.jv-app[data-jv-theme="macchiato"],
+.jv-app[data-jv-theme="mocha"],
+.jv-app[data-jv-theme="dracula"],
+.jv-app[data-jv-theme="gruvbox-dark"],
+.jv-app[data-jv-theme="gruvbox-light"] {
+	--jv-error-border: var(--jv-red);
+	--jv-error-bg: color-mix(in srgb, var(--jv-red) 14%, var(--jv-bg));
+	--jv-error-fg: var(--jv-fg);
+}
+
 .jv-app [hidden] {
 	display: none;
 }
@@ -37,13 +177,71 @@
 	margin-bottom: 12px;
 }
 
-.jv-group {
-	display: inline-flex;
-	gap: 4px;
+.jv-btn,
+.jv-select {
+	padding: 4px 10px;
+	border: 1px solid var(--jv-border);
+	border-radius: var(--jv-radius);
+	background: var(--jv-surface);
+	color: var(--jv-fg);
+	font: inherit;
+	font-size: 13px;
+	cursor: pointer;
+}
+
+.jv-btn:hover,
+.jv-select:hover {
+	background: var(--jv-hover);
+}
+
+.jv-btn:focus-visible,
+.jv-select:focus-visible,
+.jv-check input:focus-visible {
+	outline: 2px solid var(--jv-accent);
+	outline-offset: 1px;
 }
 
 .jv-btn[aria-pressed="true"] {
+	border-color: var(--jv-accent);
 	background: var(--jv-active);
+}
+
+.jv-btn-primary,
+.jv-btn-primary:hover {
+	border-color: var(--jv-accent);
+	background: var(--jv-accent);
+	color: var(--jv-bg);
+}
+
+.jv-btn-primary:hover {
+	filter: brightness(1.1);
+}
+
+/* Buttons in a group are joined into one segmented control. */
+.jv-group {
+	display: inline-flex;
+}
+
+.jv-group .jv-btn {
+	position: relative;
+	border-radius: 0;
+}
+
+.jv-group .jv-btn + .jv-btn {
+	margin-left: -1px;
+}
+
+.jv-group .jv-btn:first-child {
+	border-radius: var(--jv-radius) 0 0 var(--jv-radius);
+}
+
+.jv-group .jv-btn:last-child {
+	border-radius: 0 var(--jv-radius) var(--jv-radius) 0;
+}
+
+.jv-group .jv-btn[aria-pressed="true"],
+.jv-group .jv-btn:focus-visible {
+	z-index: 1;
 }
 
 .jv-root,
@@ -157,8 +355,14 @@
 .jv-check {
 	display: inline-flex;
 	align-items: center;
-	gap: 4px;
+	gap: 6px;
+	font-size: 13px;
 	cursor: pointer;
+}
+
+.jv-check input {
+	margin: 0;
+	accent-color: var(--jv-accent);
 }
 
 .jv-consent {

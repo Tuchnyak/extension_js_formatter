@@ -1,6 +1,17 @@
 import { browser } from "wxt/browser";
 
-export const THEMES = ["system", "light", "dark"] as const;
+export const THEMES = [
+	"system",
+	"light",
+	"dark",
+	"latte",
+	"frappe",
+	"macchiato",
+	"mocha",
+	"dracula",
+	"gruvbox-dark",
+	"gruvbox-light",
+] as const;
 export type Theme = (typeof THEMES)[number];
 
 const STORAGE_KEY = "jv-theme";
