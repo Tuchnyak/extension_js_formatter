@@ -6,7 +6,7 @@ The full specification and step-by-step plan live in [`SPEC.md`](SPEC.md) (in Ru
 
 ## Status
 
-**Version 1.0.0 is implemented (steps 1–6)**: clicking the extension icon opens the viewer page, where you paste JSON and press Format (or Ctrl/Cmd+Enter) to get a colored tree with collapsible nodes, clickable `http(s)` links, a Raw/Parsed toggle, Expand/Collapse all and a System/Light/Dark theme (saved between sessions). Invalid JSON shows an error with line, column and a caret marker. Selecting text on any page and choosing **Format selected JSON** from the right-click menu opens it in the viewer, already formatted. A JSON response opened directly in a tab (content types `application/json`, `text/json`, `*+json`) is formatted automatically; the "Auto-format JSON pages" switch in the viewer header turns this off. Inputs above roughly 2 MB are not formatted silently: the raw text is shown with a "Format anyway" button.
+**Version 1.0.0 is implemented (steps 1–6)**: clicking the extension icon opens the viewer page, where you paste JSON and press Format (or Ctrl/Cmd+Enter) to get a colored tree with collapsible nodes, clickable `http(s)` links, a Raw/Parsed toggle, Expand/Collapse all and a theme drop-down (System, Light, Dark, Catppuccin Latte/Frappé/Macchiato/Mocha; saved between sessions). Invalid JSON shows an error with line, column and a caret marker. Selecting text on any page and choosing **Format selected JSON** from the right-click menu opens it in the viewer, already formatted. A JSON response opened directly in a tab (content types `application/json`, `text/json`, `*+json`) is formatted automatically; the "Auto-format JSON pages" switch in the viewer header turns this off. Inputs above roughly 2 MB are not formatted silently: the raw text is shown with a "Format anyway" button.
 
 ## The stack in plain words
 
@@ -45,7 +45,7 @@ src/                    # all extension source code (WXT `srcDir`)
     render.ts           #     JSON -> DOM tree (collapsible <details>), raw text, errors
     toolbar.ts          #     Raw/Parsed, Expand/Collapse all, theme and auto-format switches; formatText() builds a full result
     settings.ts         #     auto-format on/off flag, persisted in storage.local
-    theme.ts            #     System/Light/Dark theme, persisted in storage.local
+    theme.ts            #     theme choice (system, light, dark, Catppuccin flavors), persisted in storage.local
     styles.css          #     shared styles and theme colors (classes prefixed with jv-)
   public/icon/          #   extension icons (16/32/48/128 px; placeholders drawn for now, to be replaced)
 store/                  # Chrome Web Store listing drafts: description, single purpose, permission justification, privacy policy

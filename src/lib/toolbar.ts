@@ -16,6 +16,10 @@ const THEME_LABELS: Record<Theme, string> = {
 	system: "System",
 	light: "Light",
 	dark: "Dark",
+	latte: "Catppuccin Latte",
+	frappe: "Catppuccin Frappé",
+	macchiato: "Catppuccin Macchiato",
+	mocha: "Catppuccin Mocha",
 };
 
 function button(label: string, onClick: () => void): HTMLButtonElement {
@@ -32,24 +36,22 @@ function group(label: string): HTMLElement {
 	return node;
 }
 
-// System / Light / Dark switch. Applies the theme to `root` and persists the choice.
+// Theme drop-down. Applies the theme to `root` and persists the choice.
 export function createThemeSwitch(root: HTMLElement): HTMLElement {
-	const node = group("Theme");
-	const buttons = new Map<Theme, HTMLButtonElement>();
+	const node = el("select", "jv-select");
+	node.setAttribute("aria-label", "Theme");
+	for (const theme of THEMES) {
+		node.append(new Option(THEME_LABELS[theme], theme));
+	}
 	const select = (theme: Theme) => {
 		applyTheme(root, theme);
-		for (const [name, btn] of buttons) {
-			btn.setAttribute("aria-pressed", String(name === theme));
-		}
+		node.value = theme;
 	};
-	for (const theme of THEMES) {
-		const btn = button(THEME_LABELS[theme], () => {
-			select(theme);
-			void saveTheme(theme);
-		});
-		buttons.set(theme, btn);
-		node.append(btn);
-	}
+	node.addEventListener("change", () => {
+		const theme = node.value as Theme;
+		select(theme);
+		void saveTheme(theme);
+	});
 	select("system");
 	void loadTheme().then(select);
 	return node;
